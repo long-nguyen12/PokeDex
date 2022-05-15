@@ -1,5 +1,5 @@
 import { Text } from "@ui-kitten/components";
-import React from "react";
+import React, { memo } from "react";
 import { View, Image, StyleSheet, Dimensions } from "react-native";
 import {
     HIGHER_POKE_IMAGE,
@@ -10,16 +10,12 @@ import { normalizeName } from "../../../utilities/normalize";
 
 const { width, height } = Dimensions.get("window");
 
-export default function CardPoke(props) {
+function CardPoke(props) {
     const { id, types, name } = props;
     return (
         <View style={styles.card}>
             <Image
-                source={
-                    id <= 650
-                        ? { uri: `${LOWER_POKE_IMAGE}${id}.png` }
-                        : { uri: `${HIGHER_POKE_IMAGE}${id}.png` }
-                }
+                source={{ uri: `${LOWER_POKE_IMAGE}${id}.png` }}
                 style={styles.image}
             />
             <Text style={styles.text}>N° {id}</Text>
@@ -48,6 +44,8 @@ export default function CardPoke(props) {
         </View>
     );
 }
+
+export default memo(CardPoke);
 
 const styles = StyleSheet.create({
     card: {

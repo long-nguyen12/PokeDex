@@ -22,6 +22,8 @@ export default function HomeScreen(props) {
     const [pokeList, setPokeList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedPoke, setSelectedPoke] = useState(null);
+    const [pokeName, setPokeName] = useState("");
+    const [filterPoke, setFilterPoke] = useState([]);
 
     useEffect(() => {
         setLoading(true);
@@ -30,7 +32,7 @@ export default function HomeScreen(props) {
 
     function showActionSheet(item) {
         SheetManager.show(POKE_ACTIONSHEET);
-        setSelectedPoke(item)
+        setSelectedPoke(item);
     }
 
     function hideActionSheet() {
@@ -53,10 +55,21 @@ export default function HomeScreen(props) {
 
     function renderPoke({ item }) {
         return (
-            <TouchableOpacity style={{ flex: 1 }} onPress={() => showActionSheet(item)}>
+            <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={() => showActionSheet(item)}
+            >
                 <CardPoke id={item.id} name={item.name} types={item.types} />
             </TouchableOpacity>
         );
+    }
+
+    function searchPoke(value) {
+        setPokeName(value);
+        const data = pokeList.filter((item) => {
+            return item.name.includes(pokeName);
+        });
+        setFilterPoke(data);
     }
 
     return (
@@ -71,13 +84,16 @@ export default function HomeScreen(props) {
                         style={styles.searchBox}
                         placeholder="Search your Pokemon"
                         accessoryRight={renderSearchIcon}
+                        onChangeText={(value) => searchPoke(value)}
+                        autoCapitalize="none"
+                        autoCorrect={false}
                     />
                 </View>
                 {loading ? (
                     <Loading />
                 ) : (
                     <FlatList
-                        data={pokeList}
+                        data={pokeName ? filterPoke : pokeList}
                         renderItem={renderPoke}
                         numColumns={2}
                         keyExtractor={(item) => item.id}

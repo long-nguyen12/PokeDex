@@ -2,7 +2,10 @@ import { Text } from "@ui-kitten/components";
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, Dimensions, ScrollView } from "react-native";
 import Loading from "../../../components/Loading/Loading";
-import { HIGHER_POKE_IMAGE, LOWER_POKE_IMAGE } from "../../../constants/commons";
+import {
+    HIGHER_POKE_IMAGE,
+    LOWER_POKE_IMAGE,
+} from "../../../constants/commons";
 import { getPokemonInfo } from "../../../services/pokemon.services";
 import { normalizeName, normalizeString } from "../../../utilities/normalize";
 import { typeColors } from "../../../utilities/color";
@@ -27,22 +30,28 @@ export default function PokeActionSheet(props) {
         setLoading(false);
     }
 
-    if (loading) return <Loading />;
+    if (loading)
+        return (
+            <View style={styles.container}>
+                <Loading />
+            </View>
+        );
     return (
         <View style={styles.container}>
             <Image
                 source={{ uri: `${HIGHER_POKE_IMAGE}${poke.id}.gif` }}
                 style={styles.image}
+                resizeMode="contain"
             />
             <ScrollView>
                 <View style={styles.scroll}>
                     <Text style={styles.text}>N° {poke.id}</Text>
                     <Text style={styles.text}>{normalizeName(poke.name)}</Text>
                     <View style={styles.typeView}>
-                        {poke.types.map((item) => {
+                        {poke.types.map((item, index) => {
                             return (
                                 <View
-                                    key={item}
+                                    key={index}
                                     style={{
                                         backgroundColor: typeColors[`${item}`],
                                         marginHorizontal: 4,
@@ -135,17 +144,22 @@ export default function PokeActionSheet(props) {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    {data.pokemon.abilities.map((item) => {
-                                        return (
-                                            <View style={styles.bgView}>
-                                                <Text>
-                                                    {normalizeName(
-                                                        item.ability.name
-                                                    )}
-                                                </Text>
-                                            </View>
-                                        );
-                                    })}
+                                    {data.pokemon.abilities.map(
+                                        (item, index) => {
+                                            return (
+                                                <View
+                                                    style={styles.bgView}
+                                                    key={index}
+                                                >
+                                                    <Text>
+                                                        {normalizeName(
+                                                            item.ability.name
+                                                        )}
+                                                    </Text>
+                                                </View>
+                                            );
+                                        }
+                                    )}
                                 </View>
                             </View>
                             <View
@@ -165,9 +179,12 @@ export default function PokeActionSheet(props) {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    {data.pokemon.stats.map((item) => {
+                                    {data.pokemon.stats.map((item, index) => {
                                         return (
-                                            <View style={styles.bgView}>
+                                            <View
+                                                style={styles.bgView}
+                                                key={index}
+                                            >
                                                 <Text
                                                     style={{ marginBottom: 4 }}
                                                 >
