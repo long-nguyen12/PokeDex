@@ -44,9 +44,7 @@ async function getAllTypes(pokeList) {
                 if (pokemonId <= pokemons.length) {
                     try {
                         pokemons[pokemonId].types.push(data.name);
-                    } catch (error) {
-                        
-                    }
+                    } catch (error) {}
                 }
             }
         }
@@ -54,14 +52,23 @@ async function getAllTypes(pokeList) {
     return pokemons;
 }
 
-export async function getPokemonInfo(id){
-    const urlPokemon = 'https://pokeapi.co/api/v2/pokemon/' + id;
-    const urlSpecies = 'https://pokeapi.co/api/v2/pokemon-species/' + id;
-    const responsePokemon = await fetch(urlPokemon);
-    const responseSpecies = await fetch(urlSpecies);
-    const pokemon = await responsePokemon.json();
-    const species = await responseSpecies.json();
-
-    const reponseEvolutions = await fetch(species.evolution_chain.url);
-    const evolution_chain = await reponseEvolutions.json();
+export async function getPokemonInfo(id) {
+    const pokemon = await axios.get(`${BASE_URL}/pokemon/${id}`).then((res) => {
+        return res.data;
+    });
+    const species = await axios
+        .get(`${BASE_URL}/pokemon-species/${id}`)
+        .then((res) => {
+            return res.data;
+        });
+    const evolution_chain = await axios
+        .get(species.evolution_chain.url)
+        .then((res) => {
+            return res.data;
+        });
+    return {
+        pokemon: pokemon,
+        species: species,
+        evolution_chain: evolution_chain,
+    };
 }

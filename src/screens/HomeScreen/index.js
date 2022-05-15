@@ -12,17 +12,30 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Loading from "../../components/Loading/Loading";
 import { getPokemonList } from "../../services/pokemon.services";
 import CardPoke from "./components/CardPoke";
+import ActionSheet, { SheetManager } from "react-native-actions-sheet";
+import { POKE_ACTIONSHEET } from "../../constants/commons";
+import PokeActionSheet from "./components/ActionSheet";
 
 const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen(props) {
     const [pokeList, setPokeList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [selectedPoke, setSelectedPoke] = useState(null);
 
     useEffect(() => {
         setLoading(true);
         loadData();
     }, []);
+
+    function showActionSheet(item) {
+        SheetManager.show(POKE_ACTIONSHEET);
+        setSelectedPoke(item)
+    }
+
+    function hideActionSheet() {
+        SheetManager.hideAll();
+    }
 
     async function loadData() {
         const data = await getPokemonList();
@@ -40,7 +53,9 @@ export default function HomeScreen(props) {
 
     function renderPoke({ item }) {
         return (
-            <CardPoke id={item.id} name={item.name} types={item.types}/>
+            <TouchableOpacity style={{ flex: 1 }} onPress={() => showActionSheet(item)}>
+                <CardPoke id={item.id} name={item.name} types={item.types} />
+            </TouchableOpacity>
         );
     }
 
@@ -65,10 +80,13 @@ export default function HomeScreen(props) {
                         data={pokeList}
                         renderItem={renderPoke}
                         numColumns={2}
-                        keyExtractor={item => item.id}
+                        keyExtractor={(item) => item.id}
                     />
                 )}
             </ImageBackground>
+            <ActionSheet id={POKE_ACTIONSHEET}>
+                {selectedPoke && <PokeActionSheet poke={selectedPoke} />}
+            </ActionSheet>
         </SafeAreaView>
     );
 }
@@ -76,7 +94,7 @@ export default function HomeScreen(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#E8F9FD"
+        backgroundColor: "#E8F9FD",
     },
     backgroundImage: {
         width: width,

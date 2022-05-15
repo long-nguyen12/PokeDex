@@ -8,3 +8,20 @@ export function normalizeName(name) {
     }
     return norm.trim();
 }
+
+export function normalizeString(flavor_text_entries) {
+    let text = "";
+    let i = 0;
+    for (i = 0; i < flavor_text_entries.length; i++) {
+        if (flavor_text_entries[i].language.name == "en") {
+            break;
+        }
+    }
+    text = flavor_text_entries[i].flavor_text.split("\n");
+    let res = "";
+    for (let i = 0; i < text.length; i++) {
+        text[i] = text[i].replace("\f", " ");
+        res += text[i] + " ";
+    }
+    return res;
+}
