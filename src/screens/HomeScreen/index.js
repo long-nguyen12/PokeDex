@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Loading from "../../components/Loading/Loading";
 import { getPokemonList } from "../../services/pokemon.services";
+import CardPoke from "./components/CardPoke";
 
 const { width, height } = Dimensions.get("window");
 
@@ -25,6 +26,7 @@ export default function HomeScreen(props) {
 
     async function loadData() {
         const data = await getPokemonList();
+        setPokeList(data);
         setLoading(false);
     }
 
@@ -37,7 +39,9 @@ export default function HomeScreen(props) {
     }
 
     function renderPoke({ item }) {
-        return <View></View>;
+        return (
+            <CardPoke id={item.id} name={item.name} types={item.types}/>
+        );
     }
 
     return (
@@ -57,7 +61,12 @@ export default function HomeScreen(props) {
                 {loading ? (
                     <Loading />
                 ) : (
-                    <FlatList data={pokeList} renderItem={renderPoke} />
+                    <FlatList
+                        data={pokeList}
+                        renderItem={renderPoke}
+                        numColumns={2}
+                        keyExtractor={item => item.id}
+                    />
                 )}
             </ImageBackground>
         </SafeAreaView>
@@ -67,6 +76,7 @@ export default function HomeScreen(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#E8F9FD"
     },
     backgroundImage: {
         width: width,

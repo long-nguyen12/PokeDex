@@ -10,6 +10,7 @@ import { StatusBar } from "react-native";
 export default function App() {
     let [fontsLoaded] = useFonts({
         BillCorporate: require("./assets/fonts/bill_corporate_narrow.ttf"),
+        BillCorporateSemiBold: require('./assets/fonts/billcorpnar-semibold.ttf')
     });
 
     if (!fontsLoaded) {
